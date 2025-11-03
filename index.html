@@ -264,6 +264,54 @@
       });
     });
   </script>
+ <!-- 🔹 SCRIPT DE FIREBASE FIRESTORE -->
+  <script type="module">
+    import { initializeApp } from "firebase/app";
+    import { getFirestore, collection, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB8l4VioTUAadIRA-e4z84aQ0z3SP9P4UM",
+    authDomain: "salumenu-9a445.firebaseapp.com",
+    projectId: "salumenu-9a445",
+    storageBucket: "salumenu-9a445.firebasestorage.app",
+    messagingSenderId: "581491346321",
+    appId: "1:581491346321:web:323a63eaf96c4386d76830"
+  };
+  const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function guardarReserva(datos, tipo = "reserva") {
+      try {
+        const colRef = collection(db, "reservas");
+        const docRef = await addDoc(colRef, {
+          tipo: tipo,               
+          ...datos,                 
+          fecha_creacion: Timestamp.now()
+        });
+        alert("✅ Reserva guardada correctamente. ID: " + docRef.id);
+      } catch (error) {
+        console.error("Error al guardar:", error);
+        alert("⚠️ Hubo un error al guardar la reserva.");
+      }
+    }
+
+    const formNormal = document.getElementById("form-reserva");
+    const formVip = document.getElementById("form-reserva-vip");
+
+    formNormal.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(formNormal).entries());
+      await guardarReserva(data, "reserva_normal");
+      formNormal.reset();
+    });
+
+    formVip.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(formVip).entries());
+      await guardarReserva(data, "reserva_vip");
+      formVip.reset();
+    });
+  </script>
 
 </body>
 </html>
