@@ -264,54 +264,61 @@
       });
     });
   </script>
- <!-- 🔹 SCRIPT DE FIREBASE FIRESTORE -->
-  <script type="module">
-    import { initializeApp } from "firebase/app";
-    import { getFirestore, collection, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+ <!-- 🔹 SCRIPT DE FIREBASE FIRESTORE CORREGIDO -->
+<script type="module">
+  // ✅ IMPORTS CORRECTOS DESDE CDN
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
+  // ✅ CONFIGURACIÓN FIREBASE
   const firebaseConfig = {
     apiKey: "AIzaSyB8l4VioTUAadIRA-e4z84aQ0z3SP9P4UM",
     authDomain: "salumenu-9a445.firebaseapp.com",
     projectId: "salumenu-9a445",
-    storageBucket: "salumenu-9a445.firebasestorage.app",
+    storageBucket: "salumenu-9a445.appspot.com",
     messagingSenderId: "581491346321",
     appId: "1:581491346321:web:323a63eaf96c4386d76830"
   };
+
   const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+  const db = getFirestore(app);
 
-    async function guardarReserva(datos, tipo = "reserva") {
-      try {
-        const colRef = collection(db, "reservas");
-        const docRef = await addDoc(colRef, {
-          tipo: tipo,               
-          ...datos,                 
-          fecha_creacion: Timestamp.now()
-        });
-        alert("✅ Reserva guardada correctamente. ID: " + docRef.id);
-      } catch (error) {
-        console.error("Error al guardar:", error);
-        alert("⚠️ Hubo un error al guardar la reserva.");
-      }
+  async function guardarReserva(datos, tipo = "reserva") {
+    try {
+      const colRef = collection(db, "reservas");
+      const docRef = await addDoc(colRef, {
+        tipo: tipo,
+        ...datos,
+        fecha_creacion: Timestamp.now()
+      });
+      alert("✅ Reserva guardada correctamente. ID: " + docRef.id);
+    } catch (error) {
+      console.error("Error al guardar:", error);
+      alert("⚠️ Hubo un error al guardar la reserva. Mirá la consola para más info.");
     }
+  }
+  
+  const formNormal = document.getElementById("form-reserva");
+  const formVip = document.getElementById("form-reserva-vip");
 
-    const formNormal = document.getElementById("form-reserva");
-    const formVip = document.getElementById("form-reserva-vip");
-
+  if (formNormal) {
     formNormal.addEventListener("submit", async (e) => {
       e.preventDefault();
       const data = Object.fromEntries(new FormData(formNormal).entries());
       await guardarReserva(data, "reserva_normal");
       formNormal.reset();
     });
+  }
 
+  if (formVip) {
     formVip.addEventListener("submit", async (e) => {
       e.preventDefault();
       const data = Object.fromEntries(new FormData(formVip).entries());
       await guardarReserva(data, "reserva_vip");
       formVip.reset();
     });
-  </script>
+  }
+</script>
 
 </body>
 </html>
